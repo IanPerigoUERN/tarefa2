@@ -5,6 +5,7 @@
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "task.h"
+#include "event_groups.h"
 
 #include <stdio.h>
 #include "hardware/adc.h"

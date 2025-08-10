@@ -4,5 +4,5 @@
 bool connect_to_wifi(const char* ssid, const char* password);
 void vWifiTask(void *pvParameters);
 
-
+extern bool wifiConnected;
 #endif

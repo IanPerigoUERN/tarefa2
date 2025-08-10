@@ -147,8 +147,10 @@ void vShowLastJoystickDirection(void *pvParameters)
         show_direction_of_joystick(&disp, "Centro");
         currentDirection = CENTER;
 
-        for (;;)
+        while(true)
         {
+            xEventGroupWaitBits(xMqtt_event, mqtt_bits,pdFALSE,pdTRUE,portMAX_DELAY);
+            if(mqqtConnected){
             // Read the joystick position on the Y axis
             int joystick_y = value_of_the_pos_of_joystick_y();
 
@@ -181,6 +183,9 @@ void vShowLastJoystickDirection(void *pvParameters)
         }
 
         vTaskDelay(pdMS_TO_TICKS(100)); 
-        
+        }else{
+            xEventGroupClearBits(xMqtt_event , mqtt_bits );
+        }
+        vTaskDelay(pdMS_TO_TICKS(100)); 
     }
 }

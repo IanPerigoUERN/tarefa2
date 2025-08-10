@@ -2,24 +2,20 @@
 #define __CONECTIONS_CREDENTIALS_H__
 
 // Configurações do WiFi
-#define WIFI_SSID ""
+#define WIFI_SSID "" // COLOQUE AQUI SUA REDE WIFI
 
-#define WIFI_PASSWORD ""
+#define WIFI_PASSWORD "" // COLOQUE AQUI A SENHA DO WIFI
 
 //Configurações do broker MQTT
-#define NOME_DO_DISPOSITIVO "IanBitdog"
+#define NOME_DO_DISPOSITIVO ""
 
 #define IP_DO_BROKER ""
 #define USER_DO_BROKER ""
 #define SENHA_DO_BROKER ""
- #define CANAL_DO_BROKER_TEMP "ha/desafio12/ian.perigo/temp"
- #define CANAL_DO_BROKER_JOYSTICK "ha/desafio12/ian.perigo/joy"
+ #define CANAL_DO_BROKER_TEMP ""
+ #define CANAL_DO_BROKER_JOYSTICK ""
 
 
-//  #define IP_DO_BROKER ""
-//  #define USER_DO_BROKER ""
-//  #define SENHA_DO_BROKER ""
-//  #define CANAL_DO_BROKER_TEMP "ian/projeto/Temperatura"
-//  #define CANAL_DO_BROKER_JOYSTICK "ian/projeto/Joystick"
+
 
 #endif /* __CONECTIONS_CREDENTIALS_H__ */

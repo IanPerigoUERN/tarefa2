@@ -24,5 +24,7 @@
 
 
 void vTemperatureUpdate(void *pvParameters);
-void vTempHumi (void *pvParameters);
+
+extern int temperature;
+// void vTempHumi (void *pvParameters);
 #endif
