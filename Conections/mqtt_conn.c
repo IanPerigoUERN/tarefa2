@@ -88,7 +88,7 @@ bool mqtt_comm_publish(const char *topic, const uint8_t *data, size_t len) {
         data,
         len,
         0,  // QoS 0
-        0,  // Não reter
+        1,  // reter
         mqtt_pub_request_cb,
         NULL
     );

@@ -9,9 +9,7 @@ void vTemperatureUpdate(void *pvParameters) {
      float temperature_float;
     int temperature;
     // Aguarda a conexão USB antes de imprimir
-    while (!stdio_usb_connected()) {
-        vTaskDelay(pdMS_TO_TICKS(100));
-    }
+    
     while (true) {
         xEventGroupWaitBits(xMqtt_event, mqtt_bits,pdFALSE,pdTRUE,portMAX_DELAY);
         if(mqqtConnected){

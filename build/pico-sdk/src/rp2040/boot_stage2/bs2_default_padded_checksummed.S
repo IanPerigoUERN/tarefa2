@@ -1,4 +1,4 @@
-// Padded and checksummed version of: /home/ian-perigo/Rasp/Build/tarefa_2/tarefa2/build/pico-sdk/src/rp2040/boot_stage2/bs2_default.bin
+// Padded and checksummed version of: C:/Users/SINE/Tarefa2/Tarefa_1/build/pico-sdk/src/rp2040/boot_stage2/bs2_default.bin
 
 .cpu cortex-m0plus
 .thumb
