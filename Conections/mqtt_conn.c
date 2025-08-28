@@ -3,7 +3,7 @@
 #include "credentials.h"
 #include "queue.h"
 
-
+ bool mqqtConnected = false;
 
 /* Variável global estática para armazenar a instância do cliente MQTT
  * 'static' limita o escopo deste arquivo */
@@ -88,7 +88,7 @@ bool mqtt_comm_publish(const char *topic, const uint8_t *data, size_t len) {
         data,
         len,
         0,  // QoS 0
-        0,  // Não reter
+        1,  // reter
         mqtt_pub_request_cb,
         NULL
     );
@@ -103,85 +103,84 @@ bool mqtt_comm_publish(const char *topic, const uint8_t *data, size_t len) {
 
 
 
-///// TASK DO MQTT
+///// TASK DO MQTT 
 
-
-
-//// DNS
-
-
-extern bool wifiConnected; // Variável global para verificar conexão Wi-Fi
-
-extern QueueHandle_t tempQueue; // Fila para receber dados de temperatura
+extern QueueHandle_t mpuqueue; // Fila para receber dados de temperatura
 
 
 
  void vMqttTask(void *pvParameters) {
-    JoystickDirection_t joystickDirection;
-    int temp = 0;
+   
+    
     char mensagem[64];
+    bool mqttSetupFeito = false;
 
     TickType_t lastTempPublishTime = 0;
     const TickType_t tempInterval = pdMS_TO_TICKS(30000); // 30 segundos
     bool primeiraPublicacaoFeita = false;
 
-    for (;;) {
-        if (wifiConnected) {
-           
-            TickType_t now = xTaskGetTickCount();  
+    MPUData_t mpuData;
 
-            //  Publicação imediata da temperatura (somente uma vez ao conectar)
-            if (!primeiraPublicacaoFeita) {
-                if (xQueueReceive(tempQueue, &temp, 0)) {
-                    snprintf(mensagem, sizeof(mensagem), "%d", temp);
-                    printf("[MQTT Task] Publicando temperatura inicial: %s\n", mensagem);
-                    mqtt_comm_publish(CANAL_DO_BROKER_TEMP, mensagem, strlen(mensagem));
-                    lastTempPublishTime = now;  // zera o cronômetro
+    while (true) {
+        // Aguarda WiFi estar conectado
+        xEventGroupWaitBits(xWifi_event, wifi_bits, pdFALSE, pdTRUE, portMAX_DELAY);
+        // printf("WiFi confirmado, verificando MQTT...\n");
+        
+        if (wifiConnected && !mqttSetupFeito) {
+            printf("Configurando MQTT...\n");
+            mqtt_setup(NOME_DO_DISPOSITIVO, IP_DO_BROKER, USER_DO_BROKER, SENHA_DO_BROKER);
+            mqttSetupFeito = true;
+            mqqtConnected = true;
+            xEventGroupSetBits(xMqtt_event, mqtt_bits);
+            vTaskDelay(pdMS_TO_TICKS(2000)); // Aguarda conexão estabilizar
+        }
+
+        if (wifiConnected && mqqtConnected) {
+            TickType_t now = xTaskGetTickCount(); 
+
+            // Publicação imediata da temperatura (somente uma vez ao conectar)
+           if (!primeiraPublicacaoFeita) {
+                if (xQueueReceive(mpuqueue, &mpuData, 0)) {
+                    snprintf(mensagem, sizeof(mensagem),
+                             "AX:%d AY:%d AZ:%d GX:%d GY:%d GZ:%d T:%d",
+                             mpuData.accel[0], mpuData.accel[1], mpuData.accel[2],
+                             mpuData.gyro[0], mpuData.gyro[1], mpuData.gyro[2],
+                             mpuData.temp);
+                    printf("[MQTT Task] Publicando inicial: %s\n", mensagem);
+                    mqtt_comm_publish(CANAL_DO_BROKER_MPU, (uint8_t*)mensagem, strlen(mensagem));
+                    lastTempPublishTime = now;
                     primeiraPublicacaoFeita = true;
                 }
             }
 
-            //  Joystick: publica ao mudar
-            if (xQueueReceive(joystickQueue, &joystickDirection, 0)) {
-                const char *direcaoStr = NULL;
-                switch (joystickDirection) {
-                    case UP: direcaoStr = "CIMA"; break;
-                    case DOWN: direcaoStr = "BAIXO"; break;
-                    case LEFT: direcaoStr = "ESQUERDA"; break;
-                    case RIGHT: direcaoStr = "DIREITA"; break;
-                    case CENTER: default: direcaoStr = "CENTRO"; break;
-                }
-
-                snprintf(mensagem, sizeof(mensagem), "%s", direcaoStr);
-                printf("[MQTT Task] Publicando joystick: %s\n", mensagem);
-                mqtt_comm_publish(CANAL_DO_BROKER_JOYSTICK, mensagem, strlen(mensagem));
-                
-                gpio_put(led_pin_green, 1);
-                vTaskDelay(50);
-                gpio_put(led_pin_green, 0);
-
-                vTaskDelay(pdMS_TO_TICKS(100));
-            }
-
-            //  Temperatura: publica a cada 30 segundos
             if ((now - lastTempPublishTime) >= tempInterval) {
-                if (xQueueReceive(tempQueue, &temp, 0)) {
-                    snprintf(mensagem, sizeof(mensagem), "%d", temp);
-                    printf("[MQTT Task] Publicando temperatura periódica: %s\n", mensagem);
-                    mqtt_comm_publish(CANAL_DO_BROKER_TEMP, mensagem, strlen(mensagem));
-                    
+                if (xQueueReceive(mpuqueue, &mpuData, 0)) {
+                    snprintf(mensagem, sizeof(mensagem),
+                             "AX:%d AY:%d AZ:%d GX:%d GY:%d GZ:%d T:%d",
+                             mpuData.accel[0], mpuData.accel[1], mpuData.accel[2],
+                             mpuData.gyro[0], mpuData.gyro[1], mpuData.gyro[2],
+                             mpuData.temp);
+                    printf("[MQTT Task] Publicando periódica: %s\n", mensagem);
+                    mqtt_comm_publish(CANAL_DO_BROKER_MPU, (uint8_t*)mensagem, strlen(mensagem));
+
                     gpio_put(led_pin_green, 1);
-                    vTaskDelay(50);
+                    vTaskDelay(pdMS_TO_TICKS(50));
                     gpio_put(led_pin_green, 0);
 
                     lastTempPublishTime = now;
                 }
             }
         } else {
-            // Se Wi-Fi cair, resetar flag
-            primeiraPublicacaoFeita = false;
+            // Se Wi-Fi cair, reseta as flags
+            if (!wifiConnected) {
+                mqqtConnected = false;
+                mqttSetupFeito = false;
+                primeiraPublicacaoFeita = false;
+                xEventGroupClearBits(xMqtt_event, mqtt_bits);
+                printf("WiFi desconectado, resetando MQTT...\n");
+            }
         }
 
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(pdMS_TO_TICKS(100)); // Aumentar delay para 1 segundo
     }
 }

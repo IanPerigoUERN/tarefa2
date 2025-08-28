@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/SINE/.pico-sdk/sdk/2.1.1/src/common/boot_uf2_headers
+# Install script for directory: C:/Users/08737260499/.pico-sdk/sdk/2.1.1/src/common/boot_uf2_headers
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "Release")
+    set(CMAKE_INSTALL_CONFIG_NAME "Debug")
   endif()
   message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 endif()
@@ -34,12 +34,12 @@ endif()
 
 # Set path to fallback-tool for dependency-resolution.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/Users/SINE/.pico-sdk/toolchain/14_2_Rel1/bin/arm-none-eabi-objdump.exe")
+  set(CMAKE_OBJDUMP "C:/Users/08737260499/.pico-sdk/toolchain/14_2_Rel1/bin/arm-none-eabi-objdump.exe")
 endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "C:/Users/SINE/Tarefa2/Tarefa_1/build/pico-sdk/src/common/boot_uf2_headers/install_local_manifest.txt"
+  file(WRITE "C:/Users/08737260499/Desktop/tarefa03/tarefa2/build/pico-sdk/src/common/boot_uf2_headers/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

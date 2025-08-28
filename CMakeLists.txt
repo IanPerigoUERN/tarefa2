@@ -32,7 +32,7 @@ project(Tarefa_1 C CXX ASM)
 
 # Pull in FreeRTOS
 
-include($ENV{FREERTOS_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
+include($ENV{FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
@@ -48,6 +48,7 @@ add_executable(Tarefa_1
     Blink/new_blink.c
     Conections/mqtt_conn.c
     Conections/wifi_conn.c
+    MPU6050/mpu6050_i2c.c
     )
 
 

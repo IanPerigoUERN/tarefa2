@@ -1,20 +1,23 @@
+#include "MPU6050/mpu6050_i2c.h"
+
 #include "pico/stdlib.h"
+#include "hardware/i2c.h"
 
 
 ///FreeRTOS
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "task.h"
+#include "event_groups.h"
 
 #include <stdio.h>
 #include "hardware/adc.h"
 
 ///LOCAL
-#include "Temperature/temp.h"
+
 #include "Blink/new_blink.h"
 
-#include "inc_OLED/ssd1306.h"
-#include "inc_joystick/joystick_lib.h"
+
 
 #include "Global/global.h" // Variável global para a fila de temperatura
 

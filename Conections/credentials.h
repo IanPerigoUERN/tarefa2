@@ -12,9 +12,8 @@
 #define IP_DO_BROKER ""
 #define USER_DO_BROKER ""
 #define SENHA_DO_BROKER ""
- #define CANAL_DO_BROKER_TEMP "ha/desafio12/ian.perigo/temp"
- #define CANAL_DO_BROKER_JOYSTICK "ha/desafio12/ian.perigo/joy"
-
+ 
+  #define CANAL_DO_BROKER_MPU "ha/desafio12/ian.perigo/MPU"
 
 //  #define IP_DO_BROKER ""
 //  #define USER_DO_BROKER ""
