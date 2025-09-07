@@ -32,7 +32,7 @@ project(Tarefa_1 C CXX ASM)
 
 # Pull in FreeRTOS
 
-include($ENV{FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
+include($ENV{FREERTOS_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()

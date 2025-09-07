@@ -9,11 +9,11 @@
 //Configurações do broker MQTT
 #define NOME_DO_DISPOSITIVO "IanBitdog"
 
-#define IP_DO_BROKER ""
-#define USER_DO_BROKER ""
-#define SENHA_DO_BROKER ""
+#define IP_DO_BROKER "200.137.1.176"
+#define USER_DO_BROKER "desafio12"
+#define SENHA_DO_BROKER "desafio12.laica"
  
-  #define CANAL_DO_BROKER_MPU "ha/desafio12/ian.perigo/MPU"
+  #define CANAL_DO_BROKER_MPU "ha/desafio12/ian.perigo/MPU6050"
 
 //  #define IP_DO_BROKER ""
 //  #define USER_DO_BROKER ""

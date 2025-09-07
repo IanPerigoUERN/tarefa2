@@ -64,22 +64,34 @@ void mpu6050_read_raw(int16_t accel[3], int16_t gyro[3], int16_t *temp) {
 
 
 
-int16_t accel[3], gyro[3], temp;
+MPUData_t mpuData;
 
 void vMPUTask (void *pvParameters) {
-    MPUData_t mpuData;
+    
+    mpuData.temp= 0;
+    mpuData.temp_celsius = 0.0;
+
 
     while(true) {
         xEventGroupWaitBits(xMqtt_event, mqtt_bits, pdFALSE, pdTRUE, portMAX_DELAY);
-        mpu6050_read_raw(accel, gyro, &temp); // Lê valores
+        mpu6050_read_raw(mpuData.accel, mpuData.gyro, &mpuData.temp); // Lê valores
+        mpuData.temp_celsius = 0.0;
+        vTaskDelay(1000);
 
-        printf("Accel X: %d, Y: %d, Z: %d | Gyro X: %d, Y: %d, Z: %d | Temp: %d\n",
-               accel[0], accel[1], accel[2],
-               gyro[0], gyro[1], gyro[2],
-               temp);
+        printf("Accel X: %d, Y: %d, Z: %d | Gyro X: %d, Y: %d, Z: %d | Temp: %.2f\n",
+               mpuData.accel[0]/ 16384, 
+               mpuData.accel[1]/ 16384, 
+               mpuData.accel[2]/ 16384,
+
+               mpuData.gyro[0]/ 131, 
+               mpuData.gyro[1]/ 131, 
+               mpuData.gyro[2]/ 131,
+
+               mpuData.temp_celsius = (mpuData.temp / 340.0) + 36.53);
+
 
          // Envia para fila (sem bloquear caso cheia)
-        if (xQueueSend(mpuqueue, &mpuData, 0) != pdPASS) {
+            if (xQueueSend(mpuqueue, &mpuData, 0) != pdPASS) {
             printf("Fila cheia, descartando leitura.\n");
         }
 

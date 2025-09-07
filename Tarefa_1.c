@@ -11,13 +11,14 @@ EventGroupHandle_t xWifi_event, xMqtt_event;
 TaskHandle_t wifi_h,mqqt_h,mpu_h;
 
 void main()
+
 {
+
+    
     xWifi_event = xEventGroupCreate();
-    xMqtt_event = xEventGroupCreate();
+    xMqtt_event = xEventGroupCreate();  
     
     stdio_init_all();
-
-   
 
     if (cyw43_arch_init()) {
         printf("Falha ao inicializar WiFi\n");
@@ -46,8 +47,8 @@ void main()
     
     
     xTaskCreate(vWifiTask, "Wifi Task", 2048, NULL, 3, &wifi_h);
-    xTaskCreate(vMqttTask, "MQTT Task", 1024, NULL, 2, &mqqt_h);
-    xTaskCreate(vMPUTask, "MPU Task", 512, NULL, 1, &mpu_h);
+    xTaskCreate(vMqttTask, "MQTT Task", 2048, NULL, 2, &mqqt_h);xTaskCreate(vWifiTask, "Wifi Task", 2048, NULL, 3, &wifi_h);
+    xTaskCreate(vMPUTask, "MPU Task", 2048, NULL, 1, &mpu_h);
 
     //Core affinity teve que ser iniciado em task.h
     

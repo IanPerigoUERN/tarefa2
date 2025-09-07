@@ -19,9 +19,10 @@ void vMPUTask(void *pvParameters);
 
 
 typedef struct {
-    int16_t accel[3];
-    int16_t gyro[3];
-    int16_t temp;
+    uint16_t accel[3];
+    uint16_t gyro[3];
+    uint16_t  temp;
+    float temp_celsius;
 } MPUData_t;
 
 
